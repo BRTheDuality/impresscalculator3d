@@ -1,49 +1,59 @@
-📦 Calculadora de Custos de Impressão 3D – Web App
+🚀 Calculadora de Custos de Impressão 3D – Web App
 
-Aplicativo web simples e responsivo para calcular automaticamente o custo real de produções em impressão 3D.
-Feito para quem trabalha vendendo peças, miniaturas, utilitários, acessórios ou serviços de impressão 3D.
+Aplicação web responsiva desenvolvida para calcular o custo real de uma impressão 3D — incluindo filamento, energia, desgaste da máquina, acabamento, embalagem, frete e lucro.
+Ideal para makers, hobbystas e empreendedores que vendem peças impressas.
+
+🎉 Disponível online:
+👉 https://impressora3dcalculadora.netlify.app/
+
+(substitua o link acima pelo real)
 
 🧠 Sobre o Projeto
 
-A Calculadora 3D foi criada para facilitar a vida de quem oferece serviços de impressão 3D, permitindo estimar com precisão:
-Custos de filamento
-Consumo de energia
-Desgaste da impressora (depreciação)
-Mão de obra (pintura, acabamento, correções)
-Embalagem
-Frete
-Margem de lucro
+A Calculadora 3D nasceu da necessidade de um método rápido e preciso para estimar o valor final de peças impressas em 3D, sem depender de planilhas, fórmulas manuais ou cálculos repetitivos.
 
-Tudo isso com uma interface limpa, mobile first e totalmente intuitiva.
+O objetivo é fornecer uma ferramenta simples, completa e acessível a qualquer pessoa que trabalhe com impressão 3D.
 
-🚀 Tecnologias Utilizadas
+✨ Principais Recursos
+🔌 Cálculo automático do custo da impressão
 
-HTML5
+Consumo energético (kWh)
 
-CSS3 (Mobile first)
+Custo do filamento (peso real × preço do rolo)
 
-JavaScript (ES6+)
+Depreciação da impressora (custo/hora)
 
-LocalStorage para salvar preferências
+Tempo total de impressão
 
-Deploy via Netlify / GitHub Pages / Vercel
+🎨 Acabamento
 
-🎯 Funcionalidades Principais
-🔧 Cálculo Completo do Custo de Impressão
+Peça neutra ou colorida
 
-Peso do filamento usado
+Opções de pintura (simples/detalhada)
 
-Preço do rolo de filamento
+Horas de pintura × valor da hora
 
-Potência da impressora
+Extras (primer, lixamento, verniz)
 
-Tarifa de energia (R$/kWh)
+📦 Embalagem e Frete
 
-Tempo total de impressão (horas + minutos)
+Tipos de embalagem
 
-🖨️ Presets de Impressoras 3D
+Custo manual
 
-Modelos populares já configurados, incluindo:
+Frete incluso (opcional)
+
+💰 Margem de Lucro configurável
+
+Modo Hobby (sem lucro)
+
+Modo Profissional
+
+Lucro %
+
+Lucro fixo
+
+🖨️ Presets de Impressoras
 
 Ender 3
 
@@ -53,76 +63,27 @@ Ender 3 V3 SE
 
 Prusa i3
 
-opção “Outro modelo (custom)”
+Impressora personalizada
 
-Cada preset inclui:
+📱 Design Mobile First
 
-Consumo médio em watts
+Perfeito para usar no celular, tablet ou PC.
 
-Custo hora estimado de desgaste
+📂 Estrutura do Projeto
+calculadora3d/
+│── index.html       → Estrutura da interface
+│── main.css         → Estilização (mobile first)
+│── main.js          → Lógica da calculadora
+│── README.md        → Documentação
 
-🎨 Acabamento e Pintura
-
-Peça neutra ou colorida
-
-Tipo de pintura: simples / detalhada
-
-Horas de pintura + valor da hora
-
-Extras: lixamento, primer, verniz
-
-📦 Embalagem e Frete
-
-Tipos de embalagem
-
-Estimativa automática (caso não informado)
-
-Frete manual (Correios / transportadora / local)
-
-💰 Modo de Uso: Hobby ou Profissional
-
-Hobby = sem lucro
-
-Profissional = porcentagem (%) ou valor fixo (R$)
-
-Sugestão automática de lucro (ex.: 200%)
-
-🧮 Resultado Final
-
-O app exibe:
-
-💠 Custo de filamento
-
-⚡ Custo de energia
-
-🔧 Custo da máquina
-
-🎨 Pintura / acabamento
-
-📦 Embalagem
-
-🚚 Frete
-
-✔ Custo total
-
-💵 Lucro
-
-🟢 Preço final sugerido ao cliente
-
-Tudo formatado em R$ (moeda brasileira).
-
-📱 Mobile First
-
-A interface foi projetada primeiro para uso no celular, mas funciona perfeitamente no PC e tablet.
-
-📝 Como Rodar na Sua Máquina
+🧪 Como testar localmente
 
 Baixe ou clone o repositório:
 
-git clone https://github.com/seuusuario/calculadora3d.git
+git clone https://github.com/SEU-USUARIO/calculadora3d.git
 
 
-Entre na pasta:
+Abra a pasta:
 
 cd calculadora3d
 
@@ -132,38 +93,34 @@ Abra o arquivo:
 index.html
 
 
-Pronto!
-Ele roda direto no navegador, sem necessidade de servidor.
+Ele abrirá direto no navegador — não precisa instalar nada.
 
-🌐 Como Publicar Online
+🌐 Deploy no Netlify
 
-Você pode publicar em:
+O site foi publicado gratuitamente usando Netlify:
 
-Netlify
+Não há build
 
-Vercel
+Não há dependências
 
-GitHub Pages
+O projeto é 100% estático
 
-Nenhum build é necessário — é um projeto 100% estático.
+Configuração usada no deploy:
 
-📂 Estrutura do Projeto
-calculadora3d/
-│── index.html      → Estrutura da interface
-│── main.css        → Estilo (mobile first)
-│── main.js         → Lógica da calculadora
-│── README.md       → Documentação
-
+Campo	Valor
+Branch	main
+Base directory	(vazio)
+Build command	(vazio)
+Publish directory	/
 🤝 Contribuições
 
 Pull requests são bem-vindos!
-Sinta-se à vontade para melhorar lógica, UI, presets ou criar novas funcionalidades.
+Sugestões de novas funcionalidades, presets de impressoras, melhorias visuais ou correções são sempre aceitas.
 
 📜 Licença
 
-Este projeto é distribuído sob a licença MIT.
-Você pode usar, estudar, modificar e distribuir livremente.
+Distribuído sob a licença MIT — você pode usar, modificar, estudar e distribuir livremente.
 
-⭐ Deixe uma estrela!
+⭐ Se gostou do projeto, deixe uma estrela no repositório!
 
-Se este projeto te ajudou, considere deixar uma ⭐ no repositório! Isso ajuda demais 🚀
+Ajuda muito e motiva a evolução da calculadora. 🚀
