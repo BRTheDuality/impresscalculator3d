@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>LexFlow Jurídico v0.6</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+    <!-- =============================
+         TELA DE LOGIN / CADASTRO
+         ============================= -->
+    <section id="login-screen">
+        <h1>LexFlow Jurídico</h1>
+        <p>Sistema simples e completo para gestão de escritório de advocacia.</p>
+
+        <div id="login-tabs">
+            <button id="login-tab-btn" class="login-tab active">Entrar</button>
+            <button id="register-tab-btn" class="login-tab">Criar conta</button>
+        </div>
+
+        <!-- Formulário de Login -->
+        <div class="login-box" id="login-box">
+            <form id="login-form">
+                <label for="login-email">E-mail</label><br>
+                <input type="email" id="login-email" required placeholder="ex: maria@escritorio.com"><br><br>
+
+                <label for="login-password">Senha</label><br>
+                <input type="password" id="login-password" required placeholder="••••••••"><br><br>
+
+                <button type="submit" id="login-btn">Entrar</button>
+                <p class="login-hint">* Versão 0.6: autenticação simples, com suporte a múltiplos logins usando os mesmos dados.</p>
+            </form>
+        </div>
+
+        <!-- Formulário de Cadastro -->
+        <div class="login-box" id="register-box" style="display:none;">
+            <form id="register-form">
+                <label for="register-email">E-mail</label><br>
+                <input type="email" id="register-email" required placeholder="ex: maria@escritorio.com"><br><br>
+
+                <label for="register-password">Senha</label><br>
+                <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres"><br><br>
+
+                <label for="register-password-confirm">Confirmar senha</label><br>
+                <input type="password" id="register-password-confirm" required placeholder="Repita a senha"><br><br>
+
+                <button type="submit" id="register-btn">Criar conta</button>
+                <p class="login-hint">
+                    Senha fica associada ao usuário; os dados do escritório (clientes, tarefas, financeiro, ações) podem ser compartilhados entre advogados.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <!-- =============================
+         APLICATIVO (APÓS LOGIN)
+         ============================= -->
+    <div id="app-container" style="display:none;">
+
+        <!-- CABEÇALHO -->
+        <header id="app-header">
+            <div class="app-header-left">
+                <h2>LexFlow Jurídico <span class="app-version">v0.6</span></h2>
+                <p id="user-info-text">
+                    Usuário logado: <span id="logged-user-email"></span>
+                </p>
+            </div>
+
+            <div class="app-header-right">
+                <!-- Botão de logout -->
+                <button id="logout-btn" class="logout-btn">Sair</button>
+
+                <!-- Ícones / resumo de notificações -->
+                <div id="notifications-bar">
+                    <span class="notif-pill" id="notif-tasks">
+                        Tarefas pendentes: <strong>0</strong>
+                    </span>
+                    <span class="notif-pill" id="notif-finance">
+                        Pendências financeiras: <strong>0</strong>
+                    </span>
+                    <span class="notif-pill" id="notif-cases">
+                        Publicações pendentes: <strong>0</strong>
+                    </span>
+                </div>
+
+                <!-- Barra de alertas de prazo / notificações -->
+                <div id="alerts-bar">
+                    <!-- JS vai preencher mensagens detalhadas -->
+                </div>
+            </div>
+        </header>
+
+        <!-- MENU DE ABAS -->
+        <nav id="top-menu">
+            <button class="tab-btn" data-tab="dashboard-tab">Início</button>
+            <button class="tab-btn" data-tab="clients-tab">Clientes</button>
+            <button class="tab-btn" data-tab="tasks-tab">Tarefas &amp; Prazos</button>
+            <button class="tab-btn" data-tab="finance-tab">Financeiro</button>
+            <button class="tab-btn" data-tab="cases-tab">Ações Judiciais</button>
+        </nav>
+
+        <!-- =============================
+             ABA: DASHBOARD / INÍCIO
+             ============================= -->
+        <section id="dashboard-tab" class="tab-screen">
+            <h3>Visão Geral do Escritório</h3>
+            <p>Resumo rápido do que está acontecendo: financeiro, prazos, clientes e ações judiciais.</p>
+
+            <div id="dashboard-layout">
+                <!-- Cartão Financeiro -->
+                <section id="dashboard-card-finance" class="panel-box">
+                    <h4>Resumo Financeiro (Ano Atual)</h4>
+                    <p><strong>Ano:</strong> <span id="dashboard-finance-year"></span></p>
+                    <p><strong>Total de entradas:</strong> <span id="dashboard-finance-entradas">R$ 0,00</span></p>
+                    <p><strong>Total de saídas:</strong> <span id="dashboard-finance-saidas">R$ 0,00</span></p>
+                    <p><strong>Saldo:</strong> <span id="dashboard-finance-saldo">R$ 0,00</span></p>
+                </section>
+
+                <!-- Cartão Próximas tarefas -->
+                <section id="dashboard-card-tasks" class="panel-box">
+                    <h4>Próximas Tarefas &amp; Prazos</h4>
+                    <p>As próximas tarefas pendentes por data de vencimento.</p>
+                    <ul id="dashboard-task-list">
+                        <!-- JS -->
+                    </ul>
+                </section>
+
+                <!-- Cartão Resumo de Clientes -->
+                <section id="dashboard-card-clients" class="panel-box">
+                    <h4>Resumo de Clientes</h4>
+                    <p><strong>Total de clientes:</strong> <span id="dashboard-clients-total">0</span></p>
+                    <p><strong>Em andamento:</strong> <span id="dashboard-clients-andamento">0</span></p>
+                    <p><strong>Aguardando audiência/decisão:</strong> <span id="dashboard-clients-aguardando">0</span></p>
+                    <p><strong>Encerrados:</strong> <span id="dashboard-clients-encerrado">0</span></p>
+                </section>
+
+                <!-- Cartão Calendário -->
+                <section id="dashboard-card-calendar" class="panel-box">
+                    <h4>Calendário</h4>
+                    <p>Visual simples de prazos, audiências e compromissos.</p>
+                    <div id="dashboard-calendar">
+                        <!-- JS vai montar o calendário mensal aqui -->
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- =============================
+             ABA: CLIENTES
+             ============================= -->
+        <section id="clients-tab" class="tab-screen" style="display:none;">
+            <h3>Clientes</h3>
+            <p>Cadastre clientes, veja detalhes, tarefas associadas e documentos.</p>
+
+            <div id="clients-layout">
+                <!-- LISTA DE CLIENTES (ESQUERDA) -->
+                <aside id="client-list-panel">
+                    <h4>Lista de Clientes</h4>
+
+                    <!-- Busca na lista de clientes -->
+                    <input type="text" id="client-list-search" placeholder="Buscar cliente pelo nome...">
+
+                    <ul id="client-list">
+                        <!-- preenchido via JS (em ordem alfabética) -->
+                    </ul>
+                    <button id="new-client-btn">+ Novo Cliente</button>
+                </aside>
+
+                <!-- DETALHES DO CLIENTE (DIREITA) -->
+                <main id="client-detail-panel">
+                    <!-- FORMULÁRIO DO CLIENTE -->
+                    <section id="client-form-container">
+                        <h4>Cadastro / Edição de Cliente</h4>
+
+                        <form id="client-form">
+                            <!-- Dados básicos -->
+                            <div class="form-row">
+                                <label for="client-name">Nome completo *</label><br>
+                                <input type="text" id="client-name" required placeholder="Ex: Maria da Silva">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="client-cpf">CPF / CNPJ</label><br>
+                                <input type="text" id="client-cpf" placeholder="Ex: 123.456.789-00">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="client-phone">Telefone</label><br>
+                                <input type="text" id="client-phone" placeholder="Ex: (73) 99999-9999">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="client-email">E-mail</label><br>
+                                <input type="email" id="client-email" placeholder="Ex: cliente@email.com">
+                            </div>
+
+                            <hr>
+
+                            <!-- Endereço completo -->
+                            <h5>Endereço</h5>
+
+                            <div class="form-row">
+                                <label for="client-street">Rua</label><br>
+                                <input type="text" id="client-street" placeholder="Ex: Rua das Flores">
+                            </div>
+
+                            <div class="form-row-inline">
+                                <div>
+                                    <label for="client-number">Número</label><br>
+                                    <input type="text" id="client-number" placeholder="Ex: 123">
+                                </div>
+                                <div>
+                                    <label for="client-complement">Complemento</label><br>
+                                    <input type="text" id="client-complement" placeholder="Ex: Sala 201">
+                                </div>
+                            </div>
+
+                            <div class="form-row-inline">
+                                <div>
+                                    <label for="client-neighborhood">Bairro</label><br>
+                                    <input type="text" id="client-neighborhood" placeholder="Ex: Centro">
+                                </div>
+                                <div>
+                                    <label for="client-city">Cidade</label><br>
+                                    <input type="text" id="client-city" placeholder="Ex: Itamaraju">
+                                </div>
+                            </div>
+
+                            <div class="form-row-inline">
+                                <div>
+                                    <label for="client-state">Estado</label><br>
+                                    <input type="text" id="client-state" placeholder="Ex: BA">
+                                </div>
+                                <div>
+                                    <label for="client-cep">CEP</label><br>
+                                    <input type="text" id="client-cep" placeholder="Ex: 00000-000">
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Info jurídica -->
+                            <div class="form-row">
+                                <label for="client-case-type">Tipo de caso / área</label><br>
+                                <input type="text" id="client-case-type" placeholder="Ex: Trabalhista, Cível, Família...">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="client-notes">Observações / O que falta fazer</label><br>
+                                <textarea id="client-notes" rows="3" placeholder="Ex: juntar documentos, marcar audiência, entrar com recurso..."></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="client-status">Status</label><br>
+                                <select id="client-status">
+                                    <option value="andamento">Em andamento</option>
+                                    <option value="aguardando">Aguardando audiência / decisão</option>
+                                    <option value="encerrado">Encerrado</option>
+                                </select>
+                            </div>
+
+                            <div class="form-buttons">
+                                <button type="submit" id="save-client-btn">Salvar Cliente</button>
+                                <button type="button" id="delete-client-btn">Excluir Cliente</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- DOCUMENTOS DO CLIENTE -->
+                    <section id="client-documents-container">
+                        <h4>Documentos do Cliente</h4>
+                        <p>Nesta versão, o arquivo é guardado apenas localmente na sessão (sem nuvem).</p>
+
+                        <div class="form-row">
+                            <label for="client-doc-file">Anexar documento</label><br>
+                            <input type="file" id="client-doc-file">
+                        </div>
+
+                        <div class="form-row">
+                            <label for="client-doc-desc">Descrição do documento</label><br>
+                            <input type="text" id="client-doc-desc" placeholder="Ex: RG, CPF, CTPS, Contrato...">
+                        </div>
+
+                        <button id="add-doc-btn" type="button">Adicionar ao cliente</button>
+
+                        <h5>Documentos cadastrados</h5>
+                        <ul id="client-doc-list">
+                            <!-- JS -->
+                        </ul>
+
+                        <!-- Área para PREVIEW de documento (PDF/imagem) -->
+                        <div id="client-doc-preview">
+                            <h5>Pré-visualização</h5>
+                            <p id="doc-preview-message">Selecione um documento com visualização disponível.</p>
+                            <iframe id="doc-preview-frame" style="width:100%; height:300px; border:1px solid #ccc; display:none;"></iframe>
+                        </div>
+                    </section>
+
+                </main>
+            </div>
+        </section>
+
+        <!-- =============================
+             ABA: TAREFAS & PRAZOS
+             ============================= -->
+        <section id="tasks-tab" class="tab-screen" style="display:none;">
+            <h3>Tarefas &amp; Prazos</h3>
+            <p>Organize o que precisa ser feito e acompanhe prazos importantes.</p>
+
+            <div id="tasks-layout">
+                <!-- FORMULÁRIO DE NOVA TAREFA -->
+                <section id="task-form-panel">
+                    <h4>Nova Tarefa / Prazo</h4>
+
+                    <form id="task-form">
+                        <div class="form-row">
+                            <label for="task-title">Descrição da tarefa *</label><br>
+                            <input type="text" id="task-title" placeholder="Ex: Protocolar petição inicial" required>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="task-client-select">Cliente (opcional)</label><br>
+                            <!-- Select preparado para busca interna via JS -->
+                            <select id="task-client-select" class="searchable-client-select">
+                                <option value="">-- Sem cliente vinculado --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="task-due-date">Data limite / prazo</label><br>
+                                <input type="date" id="task-due-date">
+                            </div>
+                            <div>
+                                <label for="task-priority">Prioridade</label><br>
+                                <select id="task-priority">
+                                    <option value="baixa">Baixa</option>
+                                    <option value="media" selected>Média</option>
+                                    <option value="alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="task-status">Status</label><br>
+                            <select id="task-status">
+                                <option value="pendente" selected>Pendente</option>
+                                <option value="concluida">Concluída</option>
+                            </select>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit">Salvar Tarefa</button>
+                            <button type="button" id="clear-task-form-btn">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- LISTA DE TAREFAS -->
+                <section id="task-list-panel">
+                    <h4>Tarefas &amp; Prazos</h4>
+
+                    <!-- Filtros -->
+                    <div id="task-filters">
+                        <label for="task-filter-status">Status:</label>
+                        <select id="task-filter-status">
+                            <option value="todos">Todos</option>
+                            <option value="pendente" selected>Pendentes</option>
+                            <option value="concluida">Concluídas</option>
+                        </select>
+
+                        <label for="task-filter-time">Prazo:</label>
+                        <select id="task-filter-time">
+                            <option value="todos">Todos</option>
+                            <option value="hoje">Vencem hoje</option>
+                            <option value="7dias">Próximos 7 dias</option>
+                            <option value="vencidos">Vencidos</option>
+                        </select>
+                    </div>
+
+                    <table id="task-table">
+                        <thead>
+                            <tr>
+                                <th>Tarefa</th>
+                                <th>Cliente</th>
+                                <th>Prazo</th>
+                                <th>Prioridade</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-table-body">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </section>
+
+        <!-- =============================
+             ABA: FINANCEIRO
+             ============================= -->
+        <section id="finance-tab" class="tab-screen" style="display:none;">
+            <h3>Financeiro</h3>
+            <p>Controle de entradas (honorários) e saídas (custos do escritório).</p>
+
+            <div id="finance-layout">
+                <!-- FORMULÁRIO DE LANÇAMENTO -->
+                <section id="finance-form-panel">
+                    <h4>Novo Lançamento</h4>
+
+                    <form id="finance-form">
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="finance-type">Tipo</label><br>
+                                <select id="finance-type">
+                                    <option value="entrada">Entrada</option>
+                                    <option value="saida">Saída</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="finance-date">Data</label><br>
+                                <input type="date" id="finance-date">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="finance-description">Descrição *</label><br>
+                            <input type="text" id="finance-description" placeholder="Ex: Honorários iniciais / Aluguel" required>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="finance-client-select">Cliente (opcional)</label><br>
+                            <!-- Select preparado para busca interna via JS -->
+                            <select id="finance-client-select" class="searchable-client-select">
+                                <option value="">-- Não vincular a cliente --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="finance-value">Valor (R$)</label><br>
+                                <input type="number" id="finance-value" step="0.01" min="0" placeholder="0,00">
+                            </div>
+                            <div>
+                                <label for="finance-status">Status</label><br>
+                                <select id="finance-status">
+                                    <option value="pago">Pago</option>
+                                    <option value="pendente">Pendente</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit">Salvar Lançamento</button>
+                            <button type="button" id="clear-finance-form-btn">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- LISTA + RESUMO -->
+                <section id="finance-list-panel">
+                    <h4>Lançamentos</h4>
+
+                    <!-- Filtros -->
+                    <div id="finance-filters">
+                        <label for="finance-filter-type">Tipo:</label>
+                        <select id="finance-filter-type">
+                            <option value="todos">Todos</option>
+                            <option value="entrada">Entradas</option>
+                            <option value="saida">Saídas</option>
+                        </select>
+
+                        <label for="finance-filter-status">Status:</label>
+                        <select id="finance-filter-status">
+                            <option value="todos">Todos</option>
+                            <option value="pago">Pago</option>
+                            <option value="pendente">Pendente</option>
+                        </select>
+
+                        <!-- Filtro por ano -->
+                        <label for="finance-filter-year">Ano:</label>
+                        <select id="finance-filter-year">
+                            <option value="todos">Todos</option>
+                        </select>
+
+                        <!-- Filtro por mês -->
+                        <label for="finance-filter-month">Mês:</label>
+                        <select id="finance-filter-month">
+                            <option value="todos">Todos</option>
+                            <option value="1">Jan</option>
+                            <option value="2">Fev</option>
+                            <option value="3">Mar</option>
+                            <option value="4">Abr</option>
+                            <option value="5">Mai</option>
+                            <option value="6">Jun</option>
+                            <option value="7">Jul</option>
+                            <option value="8">Ago</option>
+                            <option value="9">Set</option>
+                            <option value="10">Out</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dez</option>
+                        </select>
+                    </div>
+
+                    <table id="finance-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Descrição</th>
+                                <th>Cliente</th>
+                                <th>Valor (R$)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finance-table-body">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+
+                    <!-- RESUMO FINANCEIRO -->
+                    <div id="finance-summary">
+                        <h4>Resumo</h4>
+                        <p><strong>Total de entradas:</strong> <span id="summary-entradas">R$ 0,00</span></p>
+                        <p><strong>Total de saídas:</strong> <span id="summary-saidas">R$ 0,00</span></p>
+                        <p><strong>Saldo:</strong> <span id="summary-saldo">R$ 0,00</span></p>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- =============================
+             ABA: AÇÕES JUDICIAIS
+             ============================= -->
+        <section id="cases-tab" class="tab-screen" style="display:none;">
+            <h3>Ações Judiciais</h3>
+            <p>Cadastro rápido de ações, vinculação a clientes e controle de publicações pendentes.</p>
+
+            <div id="cases-layout">
+                <!-- FORMULÁRIO DE AÇÃO JUDICIAL -->
+                <section id="cases-form-panel">
+                    <h4>Nova Ação Judicial</h4>
+
+                    <form id="case-form">
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="case-internal-code">Código interno</label><br>
+                                <input type="text" id="case-internal-code" placeholder="Ex: 2025-TRAB-001">
+                            </div>
+                            <div>
+                                <label for="case-number">Nº do processo</label><br>
+                                <input type="text" id="case-number" placeholder="Ex: 0000000-00.0000.0.00.0000">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="case-main-client">Cliente do escritório</label><br>
+                            <!-- Select com busca, puxando lista de clientes -->
+                            <select id="case-main-client" class="searchable-client-select">
+                                <option value="">-- Selecione um cliente --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="case-author">Autor (nome / CPF/CNPJ)</label><br>
+                                <input type="text" id="case-author" placeholder="Nome do autor ou CPF/CNPJ">
+                            </div>
+                            <div>
+                                <label for="case-defendant">Réu (nome / CPF/CNPJ)</label><br>
+                                <input type="text" id="case-defendant" placeholder="Nome do réu ou CPF/CNPJ">
+                            </div>
+                        </div>
+
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="case-type">Classificação / tipo de ação</label><br>
+                                <input type="text" id="case-type" placeholder="Ex: Comum, Trabalhista, Família...">
+                            </div>
+                            <div>
+                                <label for="case-court">Vara / Comarca</label><br>
+                                <input type="text" id="case-court" placeholder="Ex: 1ª Vara Cível - Itamaraju/BA">
+                            </div>
+                        </div>
+
+                        <div class="form-row-inline">
+                            <div>
+                                <label for="case-status">Status</label><br>
+                                <select id="case-status">
+                                    <option value="andamento">Em andamento</option>
+                                    <option value="aguardando">Aguardando audiência / decisão</option>
+                                    <option value="encerrada">Encerrada</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="case-responsible">Advogado responsável</label><br>
+                                <!-- será associado ao login / usuário atual -->
+                                <input type="text" id="case-responsible" placeholder="Preenchido automaticamente pelo sistema" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="case-notes">Observações</label><br>
+                            <textarea id="case-notes" rows="3" placeholder="Ex: fase atual, últimos andamentos, próximos passos..."></textarea>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" id="save-case-btn">Salvar Ação</button>
+                            <button type="button" id="clear-case-form-btn">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- LISTA DE AÇÕES + PUBLICAÇÕES -->
+                <section id="cases-list-panel">
+                    <h4>Listagem de Ações</h4>
+
+                    <!-- Filtros principais -->
+                    <div id="cases-filters">
+                        <label for="case-filter-status">Status:</label>
+                        <select id="case-filter-status">
+                            <option value="todos">Todos</option>
+                            <option value="andamento">Em andamento</option>
+                            <option value="aguardando">Aguardando audiência / decisão</option>
+                            <option value="encerrada">Encerrada</option>
+                        </select>
+
+                        <label for="case-filter-client">Cliente:</label>
+                        <select id="case-filter-client" class="searchable-client-select">
+                            <option value="todos">Todos</option>
+                        </select>
+                    </div>
+
+                    <table id="cases-table">
+                        <thead>
+                            <tr>
+                                <th>Cód.</th>
+                                <th>Cliente</th>
+                                <th>Autor</th>
+                                <th>Réu</th>
+                                <th>Classificação</th>
+                                <th>Nº Processo</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cases-table-body">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+
+                    <!-- PUBLICAÇÕES PENDENTES (SUB-ÁREA) -->
+                    <section id="cases-publications-panel">
+                        <h4>Publicações da Ação Selecionada</h4>
+                        <p>Cadastre e acompanhe publicações relacionadas a esta ação.</p>
+
+                        <form id="case-publication-form">
+                            <div class="form-row-inline">
+                                <div>
+                                    <label for="pub-date">Data da informação</label><br>
+                                    <input type="date" id="pub-date">
+                                </div>
+                                <div>
+                                    <label for="pub-code">Código</label><br>
+                                    <input type="text" id="pub-code" placeholder="Ex: 11, 12...">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="pub-text">Publicação (resumo ou texto completo)</label><br>
+                                <textarea id="pub-text" rows="3" placeholder="Texto da publicação"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="pub-file">Anexar publicação em PDF (opcional)</label><br>
+                                <input type="file" id="pub-file" accept="application/pdf">
+                            </div>
+
+                            <div class="form-buttons">
+                                <button type="submit" id="add-publication-btn">Adicionar Publicação</button>
+                            </div>
+                        </form>
+
+                        <h5>Publicações cadastradas</h5>
+                        <table id="case-publications-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Data</th>
+                                    <th>Publicação</th>
+                                    <th>PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="case-publications-body">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </section>
+                </section>
+            </div>
+        </section>
+
+    </div> <!-- fim app-container -->
+
+    <!-- RODAPÉ GLOBAL -->
+    <footer id="app-footer">
+        LexFlow Jurídico • Versão 0.6 • Direitos reservados a João Pedro Rodrigues Das Neves.
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
