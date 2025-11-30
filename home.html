@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Custos 3D</title>
+
+    <!-- Aqui depois vamos ligar o CSS (main.css) -->
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <header class="app-header">
+        <div class="app-header__top">
+            <h1 class="app-title">Calculadora 3D</h1>
+            <span class="app-tagline">Simule o custo real da impressão</span>
+        </div>
+
+        <!-- Modo de uso: Hobby x Profissional (afeta o lucro depois) -->
+        <div class="mode-switch">
+            <label>
+                <input type="radio" name="mode" value="hobby" checked />
+                Hobby (sem lucro)
+            </label>
+            <label>
+                <input type="radio" name="mode" value="pro" />
+                Profissional (com lucro)
+            </label>
+        </div>
+    </header>
+
+    <main class="app-main">
+
+        <!-- BLOCO 1: Dados da impressora e do trabalho -->
+        <section class="card" id="printer-section">
+            <h2 class="card-title">Impressora & Trabalho</h2>
+
+            <!-- Escolha da impressora -->
+            <div class="form-group">
+                <label for="printerModel">Modelo da impressora</label>
+                <select id="printerModel" class="form-control">
+                    <option value="ender3">Creality Ender 3</option>
+                    <option value="ender3v2">Creality Ender 3 V2</option>
+                    <option value="ender3v3se">Creality Ender 3 V3 SE</option>
+                    <option value="prusa_i3">Prusa i3</option>
+                    <option value="custom">Outro modelo (personalizado)</option>
+                </select>
+                <small class="form-hint">
+                    Depois o JavaScript vai preencher potência / volume automático por modelo.
+                </small>
+            </div>
+
+            <!-- Dados personalizados da impressora (exibidos se "custom") -->
+            <div class="card-subsection" id="custom-printer-fields">
+                <h3>Dados da impressora personalizada</h3>
+                <div class="form-group">
+                    <label for="printerPower">Potência da impressora (W)</label>
+                    <input type="number" id="printerPower" class="form-control" min="0" step="1" placeholder="Ex: 250" />
+                    <small class="form-hint">Potência média consumida em watts.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="printerHourlyCost">Custo hora extra (opcional)</label>
+                    <input type="number" id="printerHourlyCost" class="form-control" min="0" step="0.01" placeholder="R$ por hora de uso" />
+                    <small class="form-hint">Para embutir desgaste geral da máquina (depreciação, manutenção).</small>
+                </div>
+            </div>
+
+            <!-- Tempo de impressão -->
+            <div class="card-subsection">
+                <h3>Tempo estimado de impressão</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="printHours">Horas</label>
+                        <input type="number" id="printHours" class="form-control" min="0" step="1" placeholder="0" />
+                    </div>
+                    <div class="form-group">
+                        <label for="printMinutes">Minutos</label>
+                        <input type="number" id="printMinutes" class="form-control" min="0" max="59" step="1" placeholder="0" />
+                    </div>
+                </div>
+                <small class="form-hint">
+                    Futuro: aqui podemos puxar automático de um slicer ou arquivo STL. Por enquanto, preencha manualmente.
+                </small>
+            </div>
+
+            <!-- Peso do filamento -->
+            <div class="card-subsection">
+                <h3>Filamento utilizado</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="filamentWeight">Peso da peça (g)</label>
+                        <input type="number" id="filamentWeight" class="form-control" min="0" step="0.1" placeholder="Ex: 32" />
+                    </div>
+                    <div class="form-group">
+                        <label for="filamentPrice">Preço do rolo (R$)</label>
+                        <input type="number" id="filamentPrice" class="form-control" min="0" step="0.01" placeholder="Ex: 89,90" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="filamentSpoolWeight">Peso do rolo (g)</label>
+                    <input type="number" id="filamentSpoolWeight" class="form-control" min="1" step="1" value="1000" />
+                    <small class="form-hint">Geralmente 1.000 g (1 kg).</small>
+                </div>
+            </div>
+
+            <!-- Energia -->
+            <div class="card-subsection">
+                <h3>Energia elétrica</h3>
+                <div class="form-group">
+                    <label for="kwhPrice">Tarifa de energia (R$/kWh)</label>
+                    <input type="number" id="kwhPrice" class="form-control" min="0" step="0.01" placeholder="Ex: 0,85" />
+                    <small class="form-hint">Use o valor da sua conta de luz.</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCO 2: Tipo de peça e acabamento -->
+        <section class="card" id="piece-section">
+            <h2 class="card-title">Peça & Acabamento</h2>
+
+            <!-- Tipo de peça: neutra ou colorida -->
+            <div class="form-group">
+                <label for="pieceType">Tipo de peça</label>
+                <select id="pieceType" class="form-control">
+                    <option value="neutra">Neutra (sem pintura)</option>
+                    <option value="colorida">Colorida (com pintura)</option>
+                </select>
+            </div>
+
+            <!-- Pintura (aparece mais forte quando for colorida) -->
+            <div class="card-subsection" id="painting-section">
+                <h3>Pintura / Mão de obra</h3>
+
+                <div class="form-group">
+                    <label for="paintingMode">Tipo de pintura</label>
+                    <select id="paintingMode" class="form-control">
+                        <option value="none">Sem pintura</option>
+                        <option value="simple">Simples (poucas cores)</option>
+                        <option value="detailed">Detalhada (várias cores, sombreamento)</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paintingHours">Horas de pintura</label>
+                        <input type="number" id="paintingHours" class="form-control" min="0" step="0.5" placeholder="Ex: 1,5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="paintingRate">Valor da hora (R$)</label>
+                        <input type="number" id="paintingRate" class="form-control" min="0" step="0.01" placeholder="Ex: 25,00" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="finishingExtras">Acabamentos extras</label>
+                    <select id="finishingExtras" class="form-control" multiple>
+                        <option value="lixamento">Lixamento</option>
+                        <option value="primer">Primer</option>
+                        <option value="verniz">Verniz</option>
+                    </select>
+                    <small class="form-hint">
+                        Depois vamos associar valores fixos ou por hora para cada extra no JavaScript.
+                    </small>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCO 3: Embalagem e frete -->
+        <section class="card" id="shipping-section">
+            <h2 class="card-title">Embalagem & Frete</h2>
+
+            <div class="card-subsection">
+                <h3>Embalagem</h3>
+                <div class="form-group">
+                    <label for="packagingType">Tipo de embalagem</label>
+                    <select id="packagingType" class="form-control">
+                        <option value="none">Sem embalagem especial</option>
+                        <option value="simple">Caixa simples</option>
+                        <option value="custom">Caixa personalizada</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="packagingCost">Custo da embalagem (R$)</label>
+                    <input type="number" id="packagingCost" class="form-control" min="0" step="0.01" placeholder="Ex: 3,50" />
+                </div>
+            </div>
+
+            <div class="card-subsection">
+                <h3>Frete</h3>
+                <div class="form-group">
+                    <label for="shippingType">Tipo de envio</label>
+                    <select id="shippingType" class="form-control">
+                        <option value="none">Sem frete (retirada)</option>
+                        <option value="correios">Correios</option>
+                        <option value="transportadora">Transportadora</option>
+                        <option value="local">Entrega local / motoboy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="shippingCost">Valor do frete (R$)</label>
+                    <input type="number" id="shippingCost" class="form-control" min="0" step="0.01" placeholder="Ex: 18,90" />
+                    <small class="form-hint">
+                        Aqui é mais pra você ter uma noção do valor final que o cliente vai pagar, somando frete.
+                    </small>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCO 4: Lucro e resumo -->
+        <section class="card" id="profit-section">
+            <h2 class="card-title">Lucro & Resultado</h2>
+
+            <div class="card-subsection">
+                <h3>Margem de lucro</h3>
+
+                <div class="form-group">
+                    <label for="profitMode">Tipo de margem</label>
+                    <select id="profitMode" class="form-control">
+                        <option value="none">Sem lucro (apenas custo)</option>
+                        <option value="percent">Porcentagem (%)</option>
+                        <option value="fixed">Valor fixo (R$)</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profitPercent">Margem em %</label>
+                        <input type="number" id="profitPercent" class="form-control" min="0" step="1" placeholder="Ex: 200" />
+                    </div>
+                    <div class="form-group">
+                        <label for="profitFixed">Lucro fixo (R$)</label>
+                        <input type="number" id="profitFixed" class="form-control" min="0" step="0.01" placeholder="Ex: 40,00" />
+                    </div>
+                </div>
+
+                <small class="form-hint">
+                    No modo Profissional, podemos sugerir uma margem padrão (ex: 200%) via JavaScript.
+                </small>
+            </div>
+
+            <div class="card-subsection">
+                <button id="calculateBtn" class="btn-primary">Calcular custo</button>
+            </div>
+
+            <!-- Área do resultado -->
+            <div class="card-subsection" id="result-section">
+                <h3>Resumo do cálculo</h3>
+
+                <div class="result-line">
+                    <span>Custo do filamento:</span>
+                    <span id="resultFilament">R$ 0,00</span>
+                </div>
+                <div class="result-line">
+                    <span>Custo de energia:</span>
+                    <span id="resultEnergy">R$ 0,00</span>
+                </div>
+                <div class="result-line">
+                    <span>Depreciação / máquina:</span>
+                    <span id="resultMachine">R$ 0,00</span>
+                </div>
+                <div class="result-line">
+                    <span>Pintura & acabamentos:</span>
+                    <span id="resultPainting">R$ 0,00</span>
+                </div>
+                <div class="result-line">
+                    <span>Embalagem:</span>
+                    <span id="resultPackaging">R$ 0,00</span>
+                </div>
+                <div class="result-line">
+                    <span>Frete:</span>
+                    <span id="resultShipping">R$ 0,00</span>
+                </div>
+                <hr />
+                <div class="result-line result-line--highlight">
+                    <span>Custo total (sem lucro):</span>
+                    <span id="resultTotalCost">R$ 0,00</span>
+                </div>
+                <div class="result-line result-line--highlight">
+                    <span>Lucro:</span>
+                    <span id="resultProfit">R$ 0,00</span>
+                </div>
+                <div class="result-line result-line--final">
+                    <span>Preço sugerido ao cliente:</span>
+                    <span id="resultFinalPrice">R$ 0,00</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <small>
+            Ferramenta de simulação de custos de impressão 3D. Valores são estimativas.
+        </small>
+    </footer>
+
+    <!-- Aqui depois vamos ligar o JavaScript (main.js) -->
+    <script src="main.js"></script>
+</body>
+</html>

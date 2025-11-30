@@ -1,0 +1,283 @@
+/* ============================================================
+   RESET BÁSICO / BASE
+============================================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f172a; /* fundo escuro estilo app */
+    color: #e5e7eb;
+}
+
+/* ============================================================
+   LAYOUT GERAL
+============================================================ */
+.app-header {
+    padding: 16px 16px 8px;
+    background: linear-gradient(135deg, #0f172a, #1d283a);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.app-header__top {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.app-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f9fafb;
+}
+
+.app-tagline {
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+.mode-switch {
+    display: flex;
+    gap: 8px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.mode-switch label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    color: #e5e7eb;
+    cursor: pointer;
+}
+
+.mode-switch input[type="radio"] {
+    accent-color: #22c55e;
+}
+
+.app-main {
+    padding: 12px 12px 72px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   CARDS
+============================================================ */
+.card {
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 16px;
+    padding: 14px 14px 10px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 18px 35px rgba(15, 23, 42, 0.85);
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #e5e7eb;
+}
+
+.card-subsection {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(55, 65, 81, 0.8);
+}
+
+/* ============================================================
+   FORMULÁRIOS
+============================================================ */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #e5e7eb;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 1px solid rgba(75, 85, 99, 0.9);
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    background: rgba(15, 23, 42, 0.95);
+    color: #f9fafb;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.form-control::placeholder {
+    color: #6b7280;
+}
+
+.form-control:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45);
+    background: #020617;
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+/* Linha com 2 campos lado a lado (no mobile já fica bom) */
+.form-row {
+    display: flex;
+    gap: 8px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Select múltiplo */
+#finishingExtras {
+    min-height: 70px;
+}
+
+/* ============================================================
+   BOTÕES
+============================================================ */
+.btn-primary {
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #022c22;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+    box-shadow: 0 10px 20px rgba(22, 163, 74, 0.45);
+}
+
+.btn-primary:active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow: 0 6px 12px rgba(22, 163, 74, 0.35);
+    filter: brightness(0.97);
+}
+
+/* ============================================================
+   RESULTADOS
+============================================================ */
+#result-section {
+    margin-top: 10px;
+}
+
+.result-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    padding: 4px 0;
+}
+
+.result-line span:first-child {
+    color: #9ca3af;
+}
+
+.result-line span:last-child {
+    font-weight: 500;
+    color: #e5e7eb;
+}
+
+.result-line--highlight {
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.result-line--highlight span:last-child {
+    color: #fbbf24;
+}
+
+.result-line--final {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(148, 163, 184, 0.7);
+}
+
+.result-line--final span:last-child {
+    font-size: 1.05rem;
+    color: #22c55e;
+}
+
+/* Traço separador */
+#result-section hr {
+    border: none;
+    border-top: 1px dashed rgba(75, 85, 99, 0.85);
+    margin: 8px 0;
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+.app-footer {
+    padding: 10px 16px 16px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* ============================================================
+   RESPONSIVIDADE (TABLET / DESKTOP)
+============================================================ */
+@media (min-width: 640px) {
+    .app-header {
+        padding: 18px 20px 10px;
+    }
+
+    .app-main {
+        padding: 16px 16px 80px;
+    }
+
+    .card {
+        padding: 16px 18px 12px;
+        margin-bottom: 14px;
+    }
+
+    .app-title {
+        font-size: 1.6rem;
+    }
+}
+
+@media (min-width: 900px) {
+    .app-main {
+        display: grid;
+        grid-template-columns: 2fr 2fr;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    #profit-section {
+        grid-column: span 2;
+    }
+}
